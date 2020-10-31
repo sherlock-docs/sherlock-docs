@@ -4,7 +4,7 @@ import logging
 import pytesseract
 import subprocess
 
-from wand.image import Image
+from wand.image import Image as WandImage
 from celery import shared_task
 from docx import Document as DocxDocument
 from PyPDF2 import PdfFileWriter, PdfFileReader
@@ -14,43 +14,6 @@ from django.core.files import File
 from django.conf import settings
 
 from .utils import classifier
-
-
-@shared_task
-def recognize_document_via_ocr(pk, page=False):
-    """
-    Распознавание документа посредсрвтом OCR
-    """
-    from .models import Document, PageDocument
-    doc = PageDocument.objects.get(pk=pk) if page else Document.objects.get(pk=pk)
-    try:
-        # Получаем текст из документа.
-        full_text = ''
-        file_name = doc.file.path.split('/')[-1]
-        with open(doc.file.path, 'rb') as f:
-            url = f"{settings.OCR_URL}{file_name}"
-            res = requests.post(url, data=f)
-            res.encoding = 'utf-8'
-            if res.ok:
-                pages = res.json().get('result', {}).get('pages', [])
-                for page in pages:
-                    full_text += page.get('text', '')
-            elif res.status_code == 503:
-                pages = res.json().get('result', {}).get('pages', [])
-                for page in pages:
-                    full_text += page.get('text', '')
-
-        # Сохраняем данные в базу.
-        doc.ocr_text = full_text
-        doc.status = doc.COMPLETED
-        doc.save()
-        return True
-    except Exception as err:
-        logging.warning(err)
-        doc.status = doc.FAILED
-        doc.save()
-
-    return True
 
 
 @shared_task
@@ -69,7 +32,7 @@ def recognize_document_via_tesseract(pk, page=False):
             config=custom_config
         )
         # Сохраняем данные в базу.
-        doc.tesseract_text = full_text
+        doc.text = full_text
         # Классифицируем
         if full_text:
             doc_type = classifier(full_text)
@@ -156,17 +119,18 @@ def split_pdf_to_img_pages(pk):
     try:
         path_dir_name = os.path.dirname(doc.file.path)
         origin_filename = os.path.splitext(os.path.basename(doc.file.path))[0]
-        with Image(filename=doc.file.path, resolution=settings.OPTIMAL_RESOLUTION) as pdf:
+        with WandImage(filename=doc.file.path, resolution=settings.OPTIMAL_RESOLUTION) as pdf:
             jpg = pdf.convert('jpeg')
             i = 1
             try:
                 for img in jpg.sequence:
-                    with Image(image=img) as page:
-                        filename = f'{path_dir_name}/{origin_filename}-{i}.jpg'
-                        page.save(filename=filename)
+                    with WandImage(image=img) as page_pdf:
+                        filename = f'{origin_filename}-{i}'
+                        path_to_filename = f'{path_dir_name}/{filename}.jpg'
+                        page_pdf.save(filename=path_to_filename)
                         page, created = PageDocument.objects.get_or_create(parent_document_id=pk, page=i)
                         # Прикладываем файл.
-                        with open(filename, 'rb') as f:
+                        with open(path_to_filename, 'rb') as f:
                             page.file.save(filename + '.jpg', File(f), save=True)
                         i += 1
             finally:

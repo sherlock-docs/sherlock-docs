@@ -13,7 +13,7 @@ import pathlib
 from ocr.models import Document, PageDocument
 import pandas as pd
 
-from ocr.tasks import (recognize_document_via_ocr, recognize_document_via_tesseract, recognize_docx_document,
+from ocr.tasks import (recognize_document_via_tesseract, recognize_docx_document,
                     recognize_doc_document)
 from PyPDF2 import PdfFileWriter, PdfFileReader
 from PIL import Image

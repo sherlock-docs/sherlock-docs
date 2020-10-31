@@ -20,13 +20,11 @@ class PageDocumentSerializer(serializers.ModelSerializer):
             "status",
             "type",
             "file",
-            "ocr_text",
-            "tesseract_text",
+            "text",
             "doc_text",
-            "formalized",
             "data",
         ]
-        read_only_fields = ["ocr_text", "tesseract_text", "doc_text", "data"]
+        read_only_fields = ["text", "doc_text", "data"]
 
 
 class DocumentSerializer(serializers.ModelSerializer):
@@ -36,4 +34,4 @@ class DocumentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Document
         fields = "__all__"
-        read_only_fields = ["ocr_text", "tesseract_text", "doc_text", "pages"]
+        read_only_fields = ["text", "doc_text", "pages"]

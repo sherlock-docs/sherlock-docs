@@ -4,7 +4,7 @@ from django.contrib.postgres.fields import JSONField
 from django.db import models
 from django.core.files import File
 
-from .tasks import (recognize_document_via_ocr, recognize_document_via_tesseract,
+from .tasks import (recognize_document_via_tesseract,
                     recognize_docx_document, recognize_doc_document, split_pdf_to_img_pages)
 from .utils import is_pdf, is_docx, is_doc, is_image
 
@@ -36,9 +36,7 @@ class Document(models.Model):
         (FAILED, 'Не распознан'),
     ]
     status = models.CharField(max_length=1, choices=STATUS_CHOICES, default=QUEUE, verbose_name='Статус распознавания')
-    ocr_text = models.TextField(null=True, blank=True,
-                                verbose_name='Распознанный текст из документа(без сегментации) через OCR')
-    tesseract_text = models.TextField(null=True, blank=True,
+    text = models.TextField(null=True, blank=True,
                                       verbose_name='Распознанный текст из документа(без сегментации) через Tesseract')
     doc_text = models.TextField(null=True, blank=True,
                                 verbose_name='Распознанный текст из документа(без сегментации) через Antiword или ')
@@ -94,9 +92,7 @@ class PageDocument(models.Model):
         (FAILED, 'Не распознан'),
     ]
     status = models.CharField(max_length=1, choices=STATUS_CHOICES, default=QUEUE, verbose_name='Статус распознавания')
-    ocr_text = models.TextField(null=True, blank=True,
-                                verbose_name='Распознанный текст из документа(без сегментации) через OCR')
-    tesseract_text = models.TextField(null=True, blank=True,
+    text = models.TextField(null=True, blank=True,
                                       verbose_name='Распознанный текст из документа(без сегментации) через Tesseract')
     doc_text = models.TextField(null=True, blank=True,
                                 verbose_name='Распознанный текст из документа(без сегментации) через Antiword или ')
@@ -120,7 +116,5 @@ class PageDocument(models.Model):
         super(PageDocument, self).save(*args, **kwargs)
         if self.file:
             if is_image(self.file.path):
-                if not self.tesseract_text:
+                if not self.text:
                     recognize_document_via_tesseract.delay(self.id, page=True)
-                if not self.ocr_text:
-                    recognize_document_via_ocr.delay(self.id, page=True)
