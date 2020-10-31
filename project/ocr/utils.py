@@ -1,4 +1,5 @@
 import os
+import re
 import magic
 import PIL.Image as PilImage
 from django.conf import settings
@@ -14,6 +15,7 @@ def is_image(file_path):
 
     return False
 
+
 def is_pdf(file_path):
     """
     Метод проверяет тип переданного файла,
@@ -25,6 +27,7 @@ def is_pdf(file_path):
     if magic.from_file(file_path, mime=True) == 'application/pdf':
         return True
     return False
+
 
 def is_doc(file_path):
     """
@@ -38,6 +41,7 @@ def is_doc(file_path):
         return True
     return False
 
+
 def is_docx(file_path):
     """
     Метод проверяет тип переданного файла,
@@ -50,6 +54,7 @@ def is_docx(file_path):
                        mime=True) == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
         return True
     return False
+
 
 def is_file_too_long(file_path):
     """
@@ -67,20 +72,99 @@ def is_file_too_long(file_path):
                 return True
     return False
 
-#
-# def make_jpg_from_pdf(file_path):
-#     jpg_paths = []
-#     with Image(filename=file_path, resolution=settings.OPTIMAL_RESOLUTION) as pdf:
-#         jpg = pdf.convert('jpeg')
-#         i = 1
-#         try:
-#             for img in jpg.sequence:
-#                 with Image(image=img) as page:
-#                     path_dir_name = os.path.dirname(file_path)
-#                     filename = f'{path_dir_name}/{i}.jpg'
-#                     page.save(filename=filename)
-#                     i += 1
-#                     jpg_paths.append(filename)
-#         finally:
-#             jpg.destroy()
-#         return sorted(jpg_paths)
+
+def classifier(text):
+    # Типы документов
+    city_planners_type = 'Свидетельство об утверждении архитектурно-градостроительного решения'
+    bti_type = 'Технический паспорт (МосгорБТИ, МособлБТИ,  Ростехинвентаризация, ВИСХАГИ)'
+    'Технический паспорт на здание'
+    'Технический паспорт на домовладение (земельный участок)'
+    'Кадастровый паспорт'
+    'Экспликация к архивному поэтажному плану'
+    lease_contract_type = 'Договор аренды земельного участка'
+    'Плановое (реставрационное) задание'
+    'Разрешение на производство подготовительных и основных строительно-монтажных работ'
+    'Заключение Могосэкспертизы'
+    'Договор'
+    'Градостроительное заключение'
+    'Акт государственной приемочной комиссии о приемке в эксплуатацию законченного строительством объекта'
+    'Распоряжение префекта'
+    building_permit_type = 'Разрешение на строительство'
+    'Разрешение на производство строительно-монтажных работ'
+    commissioning_type = 'Разрешение на ввод объекта в эксплуатацию'
+    'Выписка из реестра Федерального имущества'
+    'Свидетельство о регистрации права'
+    'Распоряжение'
+    'Определение'
+    'Акт'
+    'Разрешение'
+    'Заключение'
+    'Проект'
+    'Письмо'
+    'Пояснительная записка'
+    'Поэтажный план'
+    'Выписка из ЕГРН'
+    'Акт приемки в эксплуатацию законченного строительства'
+    'Выписка из постановления'
+    'Инвентаризационная карточка'
+    'Извлечение из технического паспорта'
+    other_type = 'Прочие типы документов'
+
+    # Сущности для классификации
+    building_permit_001 = 'pазрешение на строительство'
+    building_permit_002 = 'статьей 51 градостроительного'
+
+    commissioning_001 = 'разрешение на ввод объекта'
+    commissioning_002 = 'руководствуясь статьей 55 градостроительного'
+    commissioning_003 = 'продолжение разрешения на ввод'
+
+    bti_001 = 'технический паспорт'
+    bti_002 = 'технического паспорта'
+    bti_003 = 'экспликация'
+    bti_004 = 'нежилые'
+
+    lease_contract_001 = 'договор аренды'
+    lease_contract_002 = 'аренды земли'
+    lease_contract_003 = 'о предоставлении участка'
+    lease_contract_004 = 'арендодатель'
+    lease_contract_005 = 'на условиях аренды'
+    lease_contract_006 = 'по оформлению права пользования'
+
+    city_planners_001 = 'свидельство об утверждении'
+    city_planners_002 = 'рассмотрение на рабочей комиссии'
+    city_planners_003 = 'выписка из протокола'
+    city_planners_004 = 'авторы проекта'
+
+    samples = [building_permit_001, building_permit_002,
+               commissioning_001, commissioning_002, commissioning_003,
+               bti_001, bti_002, bti_003, bti_004,
+               lease_contract_001, lease_contract_002, lease_contract_003, lease_contract_004, lease_contract_005,
+               lease_contract_006,
+               city_planners_001, city_planners_002, city_planners_003, city_planners_004]
+
+    answers = [
+        building_permit_type, building_permit_type,
+        commissioning_type, commissioning_type, commissioning_type,
+        bti_type, bti_type, bti_type, bti_type,
+        lease_contract_type, lease_contract_type, lease_contract_type, lease_contract_type, lease_contract_type, lease_contract_type,
+        city_planners_type, city_planners_type, city_planners_type, city_planners_type
+    ]
+
+    # Оставляем только текст
+    text = text.lower()
+    text = re.sub(r'\s+', ' ', text, flags=re.I)
+    text = re.sub(r'\n', ' ', text)
+
+    k = 0
+    for i in range(len(samples)):
+        result = re.findall(samples[i], text)
+        if result != []:
+            return answers[i]
+            k += 1
+            break
+        if k == 18:
+            return other_type
+        else:
+            k += 1
+
+    return other_type

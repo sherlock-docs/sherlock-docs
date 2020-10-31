@@ -9,7 +9,7 @@ ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
 # install tesseract-ocr
-RUN apt-get update && apt-get install -y tesseract-ocr wget antiword
+RUN apt-get update && apt-get install -y tesseract-ocr wget antiword libmagickwand-dev ghostscript
 ENV TESSDATA_PREFIX /usr/share/tesseract-ocr/4.00/tessdata/
 RUN cd /usr/share/tesseract-ocr/4.00/tessdata/ && wget https://github.com/tesseract-ocr/tessdata/raw/3.04.00/rus.traineddata
 
