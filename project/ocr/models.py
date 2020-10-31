@@ -101,6 +101,12 @@ class PageDocument(models.Model):
     doc_text = models.TextField(null=True, blank=True,
                                 verbose_name='Распознанный текст из документа(без сегментации) через Antiword или ')
 
+    data = JSONField(
+        verbose_name='Атрибуты документа',
+        blank=True,
+        null=True
+    )
+
     class Meta:
         verbose_name = 'Страница из документа'
         verbose_name_plural = 'Страницы из документов'
@@ -118,30 +124,3 @@ class PageDocument(models.Model):
                     recognize_document_via_tesseract.delay(self.id, page=True)
                 if not self.ocr_text:
                     recognize_document_via_ocr.delay(self.id, page=True)
-
-
-class FormalizedDocument(models.Model):
-    type = models.ForeignKey(
-        DocumentType,
-        verbose_name='Тип документа',
-        on_delete=models.PROTECT,
-        related_name='formalized_docs'
-    )
-    parent = models.ForeignKey(
-        PageDocument,
-        verbose_name='Родитель',
-        on_delete=models.PROTECT,
-        related_name='formalized_docs'
-    )
-    data = JSONField(
-        verbose_name='Атрибуты документа',
-        blank=True,
-        null=True
-    )
-
-    def __str__(self):
-        return f'Документ "{self.type}"'
-
-    class Meta:
-        verbose_name = 'Формализованный документ'
-        verbose_name_plural = 'Формализованные документы'

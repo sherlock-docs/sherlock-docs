@@ -14,6 +14,6 @@ python-docx
 Pillow
 python-magic
 PyPDF2
-fitz
 PyMuPDF
 drf-extra-fields
+wand
