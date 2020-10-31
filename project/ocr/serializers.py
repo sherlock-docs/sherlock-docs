@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from drf_extra_fields.fields import Base64ImageField
+from drf_extra_fields.fields import Base64FileField
 from ocr.models import Document, DocumentType, PageDocument
 
 
@@ -30,6 +30,7 @@ class PageDocumentSerializer(serializers.ModelSerializer):
 class DocumentSerializer(serializers.ModelSerializer):
     status = serializers.ReadOnlyField(source='get_status_display')
     pages = PageDocumentSerializer(many=True, read_only=True)
+    file = Base64FileField(required=True)
 
     class Meta:
         model = Document
