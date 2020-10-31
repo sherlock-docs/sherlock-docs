@@ -45,10 +45,10 @@ def recognize_document_via_ocr(pk, page=False, jpg_file=True):
         return True
     except Exception as err:
         logging.warning(err)
-        doc.status = doc.QUEUE
+        doc.status = doc.FAILED
         doc.save()
 
-    return False
+    return True
 
 
 @shared_task
@@ -74,10 +74,10 @@ def recognize_document_via_tesseract(pk, page=False, jpg_file=False):
         return True
     except Exception as err:
         logging.warning(err)
-        doc.status = doc.QUEUE
+        doc.status = doc.FAILED
         doc.save()
 
-    return False
+    return True
 
 
 @shared_task
@@ -95,10 +95,10 @@ def recognize_doc_document(pk, page=False):
         return True
     except Exception as err:
         logging.warning(err)
-        doc.status = doc.QUEUE
+        doc.status = doc.FAILED
         doc.save()
 
-    return False
+    return True
 
 
 @shared_task
@@ -119,10 +119,10 @@ def recognize_docx_document(pk, page=False):
         return True
     except Exception as err:
         logging.warning(err)
-        doc.status = doc.QUEUE
+        doc.status = doc.FAILED
         doc.save()
 
-    return False
+    return True
 
 
 @shared_task
@@ -154,10 +154,10 @@ def split_pdf_into_pages(pk):
         return True
     except Exception as err:
         logging.warning(err)
-        doc.status = doc.QUEUE
+        doc.status = doc.FAILED
         doc.save()
 
-    return False
+    return True
 
 
 @shared_task
@@ -206,10 +206,10 @@ def split_pdf_into_img_pages(pk):
         return True
     except Exception as err:
         logging.warning(err)
-        doc.status = doc.QUEUE
+        doc.status = doc.FAILED
         doc.save()
 
-    return False
+    return True
 
 
 @shared_task
@@ -255,7 +255,7 @@ def pdf_to_jpg(pk):
         return True
     except Exception as err:
         logging.warning(err)
-        doc.status = doc.QUEUE
+        doc.status = doc.FAILED
         doc.save()
 
-    return False
+    return True

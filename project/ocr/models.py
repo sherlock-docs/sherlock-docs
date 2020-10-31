@@ -30,10 +30,12 @@ class Document(models.Model):
     QUEUE = 'Q'
     PROCESS = 'P'
     COMPLETED = 'C'
+    FAILED = 'F'
     STATUS_CHOICES = [
         (QUEUE, 'В очереди'),
         (PROCESS, 'В процессе'),
-        (COMPLETED, 'Распознан')
+        (COMPLETED, 'Распознан'),
+        (FAILED, 'Не распознан'),
     ]
     status = models.CharField(max_length=1, choices=STATUS_CHOICES, default=QUEUE, verbose_name='Статус распознавания')
     ocr_text = models.TextField(null=True, blank=True,
@@ -85,10 +87,12 @@ class PageDocument(models.Model):
     QUEUE = 'Q'
     PROCESS = 'P'
     COMPLETED = 'C'
+    FAILED = 'F'
     STATUS_CHOICES = [
         (QUEUE, 'В очереди'),
         (PROCESS, 'В процессе'),
-        (COMPLETED, 'Распознан')
+        (COMPLETED, 'Распознан'),
+        (FAILED, 'Не распознан'),
     ]
     status = models.CharField(max_length=1, choices=STATUS_CHOICES, default=QUEUE, verbose_name='Статус распознавания')
     ocr_text = models.TextField(null=True, blank=True,
