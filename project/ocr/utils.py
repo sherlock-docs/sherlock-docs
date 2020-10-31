@@ -80,7 +80,7 @@ def classifier(text):
     'Технический паспорт на здание'
     'Технический паспорт на домовладение (земельный участок)'
     'Кадастровый паспорт'
-    'Экспликация к архивному поэтажному плану'
+    explic_type = 'Экспликация к архивному поэтажному плану'
     lease_contract_type = 'Договор аренды земельного участка'
     'Плановое (реставрационное) задание'
     'Разрешение на производство подготовительных и основных строительно-монтажных работ'
@@ -120,8 +120,11 @@ def classifier(text):
 
     bti_001 = 'технический паспорт'
     bti_002 = 'технического паспорта'
-    bti_003 = 'экспликация'
-    bti_004 = 'нежилые'
+    bti_003 = 'нежилые'
+
+    explic_001 = 'экспликация'
+
+    excerpt_001 = 'выписка из технического'
 
     lease_contract_001 = 'договор аренды'
     lease_contract_002 = 'аренды земли'
@@ -135,22 +138,24 @@ def classifier(text):
     city_planners_003 = 'выписка из протокола'
     city_planners_004 = 'авторы проекта'
 
-    samples = [building_permit_001, building_permit_002,
+    ### списки
+    samples = [excerpt_001,
+               explic_001,
+               building_permit_001, building_permit_002,
                commissioning_001, commissioning_002, commissioning_003,
-               bti_001, bti_002, bti_003, bti_004,
-               lease_contract_001, lease_contract_002, lease_contract_003, lease_contract_004, lease_contract_005,
-               lease_contract_006,
+               bti_001, bti_003,
+               lease_contract_001, lease_contract_002, lease_contract_003, lease_contract_004,
+               lease_contract_005, lease_contract_006,
                city_planners_001, city_planners_002, city_planners_003, city_planners_004]
 
-    answers = [
-        building_permit_type, building_permit_type,
-        commissioning_type, commissioning_type, commissioning_type,
-        bti_type, bti_type, bti_type, bti_type,
-        lease_contract_type, lease_contract_type, lease_contract_type, lease_contract_type, lease_contract_type, lease_contract_type,
-        city_planners_type, city_planners_type, city_planners_type, city_planners_type
-    ]
+    answers = ['выписка',
+               explic_type,
+               building_permit_type, building_permit_type,
+               commissioning_type, commissioning_type, commissioning_type,
+               bti_type, bti_type,
+               lease_contract_type, lease_contract_type, lease_contract_type, lease_contract_type, lease_contract_type,
+               city_planners_type, city_planners_type, city_planners_type, city_planners_type]
 
-    # Оставляем только текст
     text = text.lower()
     text = re.sub(r'\s+', ' ', text, flags=re.I)
     text = re.sub(r'\n', ' ', text)
@@ -158,6 +163,7 @@ def classifier(text):
     k = 0
     for i in range(len(samples)):
         result = re.findall(samples[i], text)
+
         if result != []:
             return answers[i]
             k += 1
