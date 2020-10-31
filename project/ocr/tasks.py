@@ -229,7 +229,6 @@ def pdf_to_jpg(pk):
     try:
         pdf = fitz.open(doc.file.path)
         for i in range(len(pdf)):
-            i += 1
             filename = f'{origin_filename}_page_{i}'
             path_to_png_file = f'{path_dir_name}/{filename}.png'
             path_to_jpg_file = f'{path_dir_name}/{filename}.jpg'
