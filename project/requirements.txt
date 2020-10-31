@@ -17,4 +17,3 @@ PyPDF2
 fitz
 PyMuPDF
 drf-extra-fields
-wand==0.5.7

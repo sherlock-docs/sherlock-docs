@@ -74,6 +74,7 @@ class Document(models.Model):
                     filename = os.path.splitext(os.path.basename(self.file.path))[0]
                     page.jpg_file.save(filename + '.jpg', File(f), save=True)
 
+
 class PageDocument(models.Model):
     parent_document = models.ForeignKey(Document, on_delete=models.CASCADE, related_name='pages', verbose_name='Основной документ')
     page = models.PositiveIntegerField(default=1, verbose_name='Номер страницы')

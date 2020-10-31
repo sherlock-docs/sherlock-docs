@@ -66,3 +66,21 @@ def is_file_too_long(file_path):
             if height > width * 2:
                 return True
     return False
+
+#
+# def make_jpg_from_pdf(file_path):
+#     jpg_paths = []
+#     with Image(filename=file_path, resolution=settings.OPTIMAL_RESOLUTION) as pdf:
+#         jpg = pdf.convert('jpeg')
+#         i = 1
+#         try:
+#             for img in jpg.sequence:
+#                 with Image(image=img) as page:
+#                     path_dir_name = os.path.dirname(file_path)
+#                     filename = f'{path_dir_name}/{i}.jpg'
+#                     page.save(filename=filename)
+#                     i += 1
+#                     jpg_paths.append(filename)
+#         finally:
+#             jpg.destroy()
+#         return sorted(jpg_paths)

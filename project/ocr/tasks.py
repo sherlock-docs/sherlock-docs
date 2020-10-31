@@ -12,7 +12,6 @@ from PIL import Image
 from django.core.files import File
 from django.conf import settings
 
-from wand.image import Image
 
 @shared_task
 def recognize_document_via_ocr(pk, page=False, jpg_file=True):
@@ -174,16 +173,17 @@ def split_pdf_into_img_pages(pk):
 
     doc = Document.objects.get(pk=pk)
     path_dir_name = os.path.dirname(doc.file.path)
-    filename = os.path.splitext(os.path.basename(doc.file.path))[0]
+    origin_filename = os.path.splitext(os.path.basename(doc.file.path))[0]
     try:
         pdf = fitz.open(doc.file.path)
         for i in range(len(pdf)):
             i += 1
-            path_to_png_file = f'{path_dir_name}/{filename}_page_{i}.png'
-            path_to_jpg_file = f'{path_dir_name}/{filename}_page_{i}.jpg'
+            filename = f'{origin_filename}_page_{i}'
+            path_to_png_file = f'{path_dir_name}/{filename}.png'
+            path_to_jpg_file = f'{path_dir_name}/{filename}.jpg'
             for img in pdf.getPageImageList(i):
-                xref = img[0]
-                pix = fitz.Pixmap(pdf, xref)
+                # xref = img[0]
+                pix = fitz.Pixmap(pdf, filename)
                 if pix.n < 5:  # this is GRAY or RGB
                     pix.writePNG(path_to_png_file)
                     im = Image.open(path_to_png_file)
@@ -200,7 +200,7 @@ def split_pdf_into_img_pages(pk):
                 page, created = PageDocument.objects.get_or_create(parent_document_id=pk, page=i)
                 # Прикладываем файл.
                 with open(path_to_jpg_file, 'rb') as f:
-                    page.jpg_file.save(filename + 'jpg', File(f), save=True)
+                    page.jpg_file.save(filename + '.jpg', File(f), save=True)
                 pix = None
 
         return True
@@ -234,8 +234,7 @@ def pdf_to_jpg(pk):
             path_to_png_file = f'{path_dir_name}/{filename}.png'
             path_to_jpg_file = f'{path_dir_name}/{filename}.jpg'
             for img in pdf.getPageImageList(i):
-                xref = img[0]
-                pix = fitz.Pixmap(pdf, xref)
+                pix = fitz.Pixmap(pdf, filename)
                 if pix.n < 5:  # this is GRAY or RGB
                     pix.writePNG(path_to_png_file)
                     im = Image.open(path_to_png_file)
@@ -260,22 +259,3 @@ def pdf_to_jpg(pk):
         doc.save()
 
     return False
-
-
-@shared_task
-def make_jpg_from_pdf(file_path):
-    jpg_paths = []
-    with Image(filename=file_path, resolution=settings.OPTIMAL_RESOLUTION) as pdf:
-        jpg = pdf.convert('jpeg')
-        i = 1
-        try:
-            for img in jpg.sequence:
-                with Image(image=img) as page:
-                    path_dir_name = os.path.dirname(file_path)
-                    filename = '{}/{}.jpg'.format(path_dir_name, i)
-                    page.save(filename=filename)
-                    i += 1
-                    jpg_paths.append(filename)
-        finally:
-            jpg.destroy()
-        return sorted(jpg_paths)
