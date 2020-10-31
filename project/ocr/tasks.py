@@ -233,7 +233,8 @@ def pdf_to_jpg(pk):
             path_to_png_file = f'{path_dir_name}/{filename}.png'
             path_to_jpg_file = f'{path_dir_name}/{filename}.jpg'
             for img in pdf.getPageImageList(i):
-                pix = fitz.Pixmap(pdf, filename)
+                xref = img[0]
+                pix = fitz.Pixmap(pdf, xref)
                 if pix.n < 5:  # this is GRAY or RGB
                     pix.writePNG(path_to_png_file)
                     im = Image.open(path_to_png_file)
