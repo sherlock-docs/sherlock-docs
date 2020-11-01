@@ -1,5 +1,5 @@
 from django.core.management import BaseCommand
-from .models import DocumentType
+from ocr.models import DocumentType
 
 
 class Command(BaseCommand):
