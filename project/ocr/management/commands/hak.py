@@ -10,7 +10,7 @@ from django.conf import settings
 import os
 import glob
 import pathlib
-from ocr.models import Document, PageDocument
+from .models import Document, PageDocument
 
 class Command(BaseCommand):
     def handle(self, *args, **options):

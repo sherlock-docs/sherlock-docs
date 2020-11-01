@@ -3,8 +3,8 @@ import logging
 from rest_framework import serializers
 from drf_extra_fields.fields import Base64FileField
 
-from ocr.models import Document, DocumentType, PageDocument
-from .utils import is_pdf
+from .models import Document, DocumentType, PageDocument
+
 
 class DocumentTypeSerializer(serializers.ModelSerializer):
     class Meta:

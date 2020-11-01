@@ -1,27 +1,10 @@
 from django.core.management import BaseCommand
-from ocr.models import DocumentType
-
-
-"""
-            'Свидетельство об утверждении архитектурно-градостроительного решения': {
-                'atr1': {
-                    'description': 'Расположенного по адресу',
-                    'type': 'text/date/choices',
-                    'coises': [qwe, qwe] or [],
-                    'razdel': 'qweqweqw',
-                },
-"""
-"""
-5.2.1.	Общие атрибуты к определению для всех типов документов
-Тип документа
-Номер
-Дата 
-Выдавший орган 
-"""
+from .models import DocumentType
 
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
+        """Скрипт заполнения базы типами файлов."""
         doc_types_and_attrs = {
             'Свидетельство об утверждении архитектурно-градостроительного решения': {
                 'number': {

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from ocr.models import (Document, DocumentType, PageDocument)
+from .models import (Document, DocumentType, PageDocument)
 
 
 @admin.register(DocumentType)

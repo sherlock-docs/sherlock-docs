@@ -4,7 +4,7 @@ import logging
 import pytesseract
 import subprocess
 
-
+from wand.image import Image as WandImage
 from celery import shared_task
 from docx import Document as DocxDocument
 from PyPDF2 import PdfFileWriter, PdfFileReader
@@ -13,7 +13,7 @@ from PIL import Image
 from django.core.files import File
 from django.conf import settings
 
-from .utils import classifier
+from ocr.utils import classifier
 
 
 @shared_task
@@ -115,7 +115,6 @@ def split_pdf_to_img_pages(pk):
     :return: None.
     """
     from .models import Document, PageDocument
-    from wand.image import Image as WandImage
     doc = Document.objects.get(pk=pk)
     try:
         path_dir_name = os.path.dirname(doc.file.path)
