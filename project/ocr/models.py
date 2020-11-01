@@ -47,7 +47,7 @@ class Document(models.Model):
         ordering = ['-id']
 
     def __str__(self):
-        return self.file.name if self.file else self.id
+        return str(self.file.name) if self.file else str(self.id)
 
     @property
     def type_name(self):
