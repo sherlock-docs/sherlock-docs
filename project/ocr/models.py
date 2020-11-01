@@ -46,6 +46,9 @@ class Document(models.Model):
         verbose_name_plural = 'Документы'
         ordering = ['-id']
 
+    def __str__(self):
+        return self.file.name if self.file else self.id
+
     @property
     def type_name(self):
         return self.type.name
