@@ -21,6 +21,6 @@ class PageDocumentFilter(django_filters.FilterSet):
             'type_id',
             'type_name',
             'text',
-            'page',
+            'doc_page',
             'status',
         ]
