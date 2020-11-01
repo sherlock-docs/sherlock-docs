@@ -39,7 +39,7 @@ $ python3 manage.py createsuperuser
 Tesseract разработан на основе модели OCRopus на Python, которая была ответвлением LSMT на C ++, называемого CLSTM. CLSTM - это реализация модели рекуррентной нейронной сети LSTM на C ++ с использованием библиотеки Eigen для численных вычислений.
 
 Наше решение по алгоримта формализации документов выглядит следующим образом:
-![Image alt](https://github.com/{username}/{repository}/raw/{branch}/{path}/project/static/document_formalization.png)
+![Image alt](https://github.com/{username}/sherlock-docs/project/static/document_formalization.png)
 
 # Интерфейсы API: #
 **API** для добавления и отображения всех загруженных в систему неформализованных документов
