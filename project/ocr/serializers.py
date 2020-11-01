@@ -13,7 +13,7 @@ class DocumentTypeSerializer(serializers.ModelSerializer):
 
 
 class PageDocumentSerializer(serializers.ModelSerializer):
-    type = serializers.SlugRelatedField(source='name')
+    type = serializers.SerializerMethodField('get_type_name')
     status = serializers.ReadOnlyField(source='get_status_display')
 
     class Meta:
@@ -28,6 +28,9 @@ class PageDocumentSerializer(serializers.ModelSerializer):
             "data",
         ]
         read_only_fields = ["type", "text", "doc_text", "data"]
+
+   def get_type_name(self, obj):
+        return obj.type.name if obj.type else ''
 
 
 class DocumentBase64FileField(Base64FileField):
