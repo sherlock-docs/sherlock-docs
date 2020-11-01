@@ -53,7 +53,7 @@ services:
   redis:
     image: redis:5-alpine
     ports:
-    - 127.0.0.1:6380:6380
+    - "127.0.0.1:6380:6380"
     networks:
       - sherlock-docs-backend-tier
     volumes:
