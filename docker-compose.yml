@@ -6,7 +6,7 @@ services:
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - ./project:/usr/src/app/
-      - ./Dataset:/user/src/app/Dataset
+      - /home/magomed/master/new/sherlock-docs/Dataset:/user/src/app/Dataset
 
     ports:
       - 8020:8000
