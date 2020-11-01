@@ -1,6 +1,4 @@
 import os
-import cv2
-import numpy as np
 import re
 import magic
 import PIL.Image as PilImage
