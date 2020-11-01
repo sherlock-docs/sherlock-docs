@@ -17,6 +17,5 @@ class Command(BaseCommand):
                 filepath = os.path.join(path_to_file, file)
                 page, created = Document.objects.get_or_create(file=filepath)
                 # Прикладываем файл.
-                with open(self.file.path, 'rb') as f:
-                    filename = os.path.splitext(os.path.basename(self.file.path))[0]
+                with open(filepath, 'rb') as f:
                     page.file.save(file, File(f), save=True)
