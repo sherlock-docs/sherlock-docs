@@ -14,6 +14,7 @@ class PageDocumentFilter(django_filters.FilterSet):
     type_id = django_filters.Filter(name='type_id', lookup_expr='exact')
     type_name = django_filters.Filter(name='type__name', lookup_expr='exact')
     text = django_filters.Filter(name='text', lookup_expr='icontains')
+    doc_page = django_filters.Filter(name='page', lookup_expr='exact')
 
     class Meta:
         model = PageDocument
