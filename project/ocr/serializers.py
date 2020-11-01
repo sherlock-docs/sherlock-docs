@@ -13,7 +13,7 @@ class DocumentTypeSerializer(serializers.ModelSerializer):
 
 
 class PageDocumentSerializer(serializers.ModelSerializer):
-    type = serializers.ReadOnlyField(source='type.name')
+    type = serializers.SlugRelatedField(source='name')
     status = serializers.ReadOnlyField(source='get_status_display')
 
     class Meta:
@@ -27,7 +27,7 @@ class PageDocumentSerializer(serializers.ModelSerializer):
             "doc_text",
             "data",
         ]
-        read_only_fields = ["text", "doc_text", "data"]
+        read_only_fields = ["type", "text", "doc_text", "data"]
 
 
 class DocumentBase64FileField(Base64FileField):

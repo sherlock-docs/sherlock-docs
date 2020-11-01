@@ -11,7 +11,9 @@ class Command(BaseCommand):
         for file_type in os.listdir(dataset_path):
             path_to_file = os.path.join(dataset_path, file_type)
             for file in os.listdir(path_to_file):
+                print(file)
                 filepath = os.path.join(path_to_file, file)
+                print(filepath)
                 doc, created = Document.objects.get_or_create(file=filepath)
                 with open(filepath, 'rb') as f:
                     doc.file.save(file, File(f), save=True)
