@@ -16,5 +16,5 @@ class DocumentAdmin(admin.ModelAdmin):
 @admin.register(PageDocument)
 class PageDocumentAdmin(admin.ModelAdmin):
     search_fields = ('text', )
-    list_display = ('id', 'parent', 'page', 'file', 'type', 'status')
+    list_display = ('id', 'parent_document', 'page', 'file', 'type', 'status')
     list_filter = ('type', 'status', 'page')
